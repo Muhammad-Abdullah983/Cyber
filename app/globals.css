@@ -2,7 +2,13 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #ffffff;
+  --darkgray: rgba(237, 237, 237, 1);
+  --lightgray: rgba(246, 246, 246, 1);
+  --subheading: rgba(144, 144, 144, 1);
+  --lightblack: rgba(53, 53, 53, 1);
+  --darkblack: rgba(33, 28, 36, 1);
+  --mainblack: rgba(0, 0, 0, 1);
 }
 
 @theme inline {
@@ -14,13 +20,38 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #ffffff;
   }
 }
 
 body {
-  background: var(--background);
+  background: var(--foreground);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("/fonts/SFPRODISPLAYREGULAR.OTF") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("/fonts/SFPRODISPLAYMEDIUM.OTF") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("/fonts/SFPRODISPLAYBOLD.OTF") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Apply globally */
+body {
+  font-family: "SF Pro Display", sans-serif;
 }

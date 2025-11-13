@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/component/Hero-section.jsx", "app/component/Apple-Products.jsx", "app/component/AllProducts.jsx", "app/component/category.jsx", "app/component/Discounts-cards.jsx", "app/component/Navbar.jsx", "app/component/Popular-Products.jsx", "app/layout.jsx", "app/page.jsx"  ],
   "exclude": ["node_modules"]
 }
