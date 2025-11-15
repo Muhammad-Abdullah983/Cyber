@@ -180,11 +180,12 @@ export default function CartPage() {
                             {/* Checkout Button */}
                             <button
                                 className="w-full bg-black text-white py-3 rounded-lg mt-8 font-medium text-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => alert("Checkout flow not implemented")}
+                                onClick={() => router.push("/AddressInformation")}
                                 disabled={cart.length === 0}
                             >
                                 Checkout
                             </button>
+
                         </div>
                     </div>
                 </div>
