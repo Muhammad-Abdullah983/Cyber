@@ -40,12 +40,15 @@ export default async function Page({ params }) {
       <div className="w-full h-screen flex justify-center items-center bg-white">
         <h1 className="text-2xl font-bold text-black">Product not found</h1>
       </div>
+      
     );
   }
 
   return (
-    <div className="bg-white min-h-screen w-full">
+    <div className="bg-white min-h-screen  w-full">
+    
       <Details product={product} />
+      
     </div>
   );
 }
