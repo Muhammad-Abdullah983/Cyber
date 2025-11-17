@@ -6,8 +6,8 @@ import { ChevronDown, MapPin } from "lucide-react";
 
 const StepHeader = () => {
     return (
-        <div className="flex justify-between items-center mr-12 sm:mt-6  sm:mb-25 mb-18">
-            <div className="flex items-center hidden sm:block text-center">
+        <div className="flex  justify-between items-center mr-12 sm:mt-6  sm:mb-25 mb-18">
+            <div className="flex  items-center hidden sm:flex text-center">
                 <div className="w-7 h-7 rounded-full bg-gray-200 text-black flex items-center justify-center">
                     <MapPin size={14} />
                 </div>

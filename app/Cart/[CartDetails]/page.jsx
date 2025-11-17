@@ -19,96 +19,106 @@ export default function CartPage() {
     const total = subtotal + tax + shipping;
 
     // Helper to format prices
+    // Always show two decimal places so cents are never hidden (e.g. $99.00)
     const formatPrice = (price) => {
-        // This will format $1399 as $1,399
-        return price.toLocaleString('en-US', {
+        const withoutDecimals = Math.floor(Number(price));
+
+        return withoutDecimals.toLocaleString('en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         });
-    }
+    };
 
     return (
         <div className="bg-white min-h-screen">
-            <div className="container mx-auto max-w-6xl px-4 py-12">
-
-                {/* Main Layout Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
+            <div className="container mx-auto sm:max-w-[83%] px-4 py-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     {/* --- LEFT COLUMN: SHOPPING CART --- */}
-                    <div className=" ">
+                    <div>
                         <h1 className="text-2xl text-black font-semibold mb-8">Shopping Cart</h1>
-
                         {cart.length === 0 ? (
                             <div className="text-center py-20 bg-gray-50 rounded-lg">
                                 <p className="text-gray-500 mb-4 text-lg">Your cart is empty.</p>
                                 <button
-                                    onClick={() => router.push("/")}
+                                    onClick={() => simulateNavigation("/")}
                                     className="px-6 py-3 bg-black text-white rounded-lg font-medium"
                                 >
                                     Continue Shopping
                                 </button>
                             </div>
                         ) : (
-                            <div className="space-y-8">
+                            <div className="space-y-8 ">
                                 {cart.map((item) => (
+                                    // --- THIS IS THE START OF THE EDITED SECTION ---
                                     <div
                                         key={item.id}
-                                        className="flex items-center gap-6 border-b border-gray-200 pb-8"
+                                        className="flex items-center gap-4 sm:gap-6 border-b border-[#A3A3A3] pb-8"
                                     >
-                                        {/* Image */}
+                                        {/* 1. Image */}
                                         <div className="w-24 h-24 flex-shrink-0">
                                             <img
                                                 src={item.thumbnail}
                                                 alt={item.title}
-                                                className="w-full h-full rounded-lg object-cover bg-gray-100 p-1"
+                                                className="w-full h-full rounded-lg object-cover p-1"
                                             />
                                         </div>
 
-                                        {/* Details */}
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-base text-gray-900">{item.title}</h3>
+                                        {/* 2. Item Name/ID */}
+                                        <div className="sm:flex sm:gap-8">
+                                            <div className="flex-1 sm:w-[155px]">
+                                                <h3 className="font-semibold text-base text-gray-900 " title={item.title}>
+                                                    {item.title}
+                                                </h3>
+                                                <p className="text-gray-400 text-xs mt-1">#{item.id}</p>
+                                            </div>
 
-                                            <p className="text-gray-400 text-xs mt-1">#{item.id}</p>
-                                        </div>
+                                            {/* 3. Quantity Selector */}
+                                            <div className="flex items-center">
+                                                <div className="flex items-center gap-4 flex-shrink-0">
+                                                    <button
+                                                        className="text-2xl text-gray-900 hover:text-black disabled:opacity-50 cursor-pointer"
+                                                        onClick={() => updateQuantity(item.id, item.qty - 1)}
+                                                        disabled={item.qty <= 1}
+                                                        aria-label="Decrease quantity"
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <span className="text-base font-medium px-1.5 py-0.7 text-center text-black border rounded-sm border-gray-200">
+                                                        {item.qty}
+                                                    </span>
+                                                    <button
+                                                        className="text-2xl text-gray-900 hover:text-black cursor-pointer"
+                                                        onClick={() => updateQuantity(item.id, item.qty + 1)}
+                                                        aria-label="Increase quantity"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
 
-                                        {/* Quantity */}
-                                        <div className="flex items-center gap-4">
-                                            <button
-                                                className="text-2xl text-gray-900 hover:text-black disabled:opacity-50"
-                                                onClick={() => updateQuantity(item.id, item.qty - 1)}
-                                                disabled={item.qty <= 1}
-                                                aria-label="Decrease quantity"
-                                            >
-                                                -
-                                            </button>
-                                            <span className="text-lg font-medium w-8 text-center text-gray-800 border rounded-sm border-gray-200">{item.qty}</span>
-                                            <button
-                                                className="text-2xl text-gray-900 hover:text-black"
-                                                onClick={() => updateQuantity(item.id, item.qty + 1)}
-                                                aria-label="Increase quantity"
-                                            >
-                                                +
-                                            </button>
-                                        </div>
+                                                {/* 4. Price */}
+                                                <div className="flex-shrink-0 w-24 sm:text-center text-right ">
+                                                    <p className="text-lg font-semibold text-black">
+                                                        {formatPrice(item.price * item.qty)}
+                                                    </p>
+                                                </div>
 
-                                        {/* Price */}
-                                        <div className="w-20 text-right">
-                                            <p className="text-lg font-semibold text-black">{formatPrice(item.price * item.qty)}</p>
-                                        </div>
-
-                                        {/* Remove Button */}
-                                        <div className="w-8 text-right">
-                                            <button
-                                                className="text-2xl text-gray-900 hover:text-red-500 transition-colors"
-                                                onClick={() => removeFromCart(item.id)}
-                                                aria-label="Remove item"
-                                            >
-                                                <IoClose />
-                                            </button>
+                                                {/* 5. Remove Button */}
+                                                <div className="flex-shrink-0">
+                                                    <button
+                                                        // Replaced icon with "X" and adjusted styling
+                                                        className="text-base font-medium  ml-6 sm:ml-0 text-gray-700 hover:text-red-500 transition-colors w-5 h-5 flex items-center justify-center"
+                                                        onClick={() => removeFromCart(item.id)}
+                                                        aria-label="Remove item"
+                                                    >
+                                                        <img src="/images/Close.svg" alt="" />
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                    // --- THIS IS THE END OF THE EDITED SECTION ---
                                 ))}
                             </div>
                         )}
@@ -116,7 +126,7 @@ export default function CartPage() {
 
                     {/* --- RIGHT COLUMN: ORDER SUMMARY --- */}
                     <div className="lg:col-span-1 ">
-                        <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-sm">
+                        <div className="bg-white sm:p-12 p-4 rounded-lg border border-gray-200 ">
                             <h2 className="text-xl text-black font-semibold mb-6">Order Summary</h2>
 
                             {/* Discount Code */}
@@ -150,7 +160,7 @@ export default function CartPage() {
                                     />
 
                                     {/* The Apply Button */}
-                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 px-4  py-1 border border-gray-900 rounded-md text-[12px] font-medium text-black hover:bg-gray-200">
+                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1 border border-black rounded-md text-[12px] font-medium text-black hover:bg-gray-200">
                                         Apply
                                     </button>
                                 </div>
@@ -158,28 +168,28 @@ export default function CartPage() {
 
                             {/* Price Lines */}
                             <div className="space-y-4 text-gray-700">
-                                <div className="flex justify-between">
+                                <div className="flex justify-between text-base text-black font-semibold mb-6    ">
                                     <span>Subtotal</span>
                                     <span>{formatPrice(subtotal)}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span>Estimated Tax</span>
-                                    <span>{formatPrice(tax)}</span>
+                                    <span className="text-[#545454] text-base">Estimated Tax</span>
+                                    <span className="font-semibold text-black">{formatPrice(tax)}</span>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span>Estimated Shipping & Handling</span>
-                                    <span>{formatPrice(shipping)}</span>
+                                <div className="flex justify-between mb-6">
+                                    <span className="text-[#545454] text-base">Estimated Shipping & Handling</span>
+                                    <span className="font-semibold text-black">{formatPrice(shipping)}</span>
                                 </div>
-                                <hr className="my-2" />
-                                <div className="flex justify-between text-lg font-semibold text-gray-900">
+
+                                <div className="flex justify-between text-base font-semibold text-black ">
                                     <span>Total</span>
-                                    <span>{formatPrice(total)}</span>
+                                    <span className="font-semibold text-black">{formatPrice(total)}</span>
                                 </div>
                             </div>
 
                             {/* Checkout Button */}
                             <button
-                                className="w-full bg-black text-white py-3 rounded-lg mt-8 font-medium text-lg hover:bg-gray-800 transition-colors"
+                                className="w-full bg-black text-white py-3 rounded-lg mt-8 mb-8 sm:mb-0 font-medium text-lg hover:bg-gray-800 transition-colors mt-12"
                                 onClick={() => router.push("/AddressInformation")}
                                 disabled={cart.length === 0}
                             >

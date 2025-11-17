@@ -20,6 +20,7 @@ const Details = ({ product }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [wishlist, setWishlist] = useState({}); // Manage wishlist for related items
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [selectedStorage, setSelectedStorage] = useState('256GB'); // Track selected storage
 
   // Calculate fake original price
   const originalPrice = Math.round(product.price * 1.2);
@@ -94,10 +95,10 @@ const Details = ({ product }) => {
 
       {/* SECTION 1: TOP PRODUCT CARD (YOUR CODE)    */}
       {/* ========================================== */}
-      <div className="max-w-[80%] mx-auto px-4 md:px-0">
+      <div className="max-w-[100%] sm:max-w-[80%] mx-auto px-4 md:px-0">
 
         {/* BREADCRUMB NAVIGATION */}
-        <nav className="flex items-center gap-3 text-[#A4A4A4] text-base py-8 sm:gap-6 mb-4 sm:mb-20 overflow-x-auto whitespace-nowrap">
+        <nav className="hidden sm:flex flex items-center gap-3 text-[#A4A4A4] text-base py-8 sm:gap-6 mb-4 sm:mb-20 overflow-x-auto whitespace-nowrap">
           <Link href="/" className="hover:text-black transition">Home</Link>
           <IoChevronForward className="text-base" />
 
@@ -123,7 +124,7 @@ const Details = ({ product }) => {
           {/* --- LEFT COLUMN: IMAGES --- */}
           <div className="w-full md:w-1/2 flex flex-col-reverse md:flex-row gap-4">
             {/* Thumbnails List */}
-            <div className="flex md:flex-col gap-4 pt-28 overflow-x-auto md:overflow-visible justify-center md:justify-start">
+            <div className="flex md:flex-col gap-4 sm:pt-28 overflow-x-auto md:overflow-visible justify-center md:justify-start">
               {product.images.slice(0, 4).map((img, index) => (
                 <div
                   key={index}
@@ -135,7 +136,7 @@ const Details = ({ product }) => {
               ))}
             </div>
             {/* Main Image Area */}
-            <div className="flex-1 flex items-center justify-center pb-40 min-h-[350px] md:min-h-[500px] p-8">
+            <div className="flex-1 flex items-center justify-center sm:pb-40 min-h-[350px] md:min-h-[500px] p-8">
               <img src={mainImage} alt={product.title} className="max-h-[400px] w-full object-contain drop-shadow-xl" />
             </div>
           </div>
@@ -167,11 +168,15 @@ const Details = ({ product }) => {
             {/* Storage */}
             <div className="mt-2">
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap justify-between sm:mr-20">
                 {['128GB', '256GB', '512GB', '1TB'].map((storage, i) => (
                   <button
                     key={i}
-                    className={`px-8 py-3 rounded-lg border text-sm font-medium transition ${i === 2 ? 'border-black text-black bg-white shadow-sm' : 'border-gray-300 text-gray-500 hover:border-gray-400'}`}
+                    onClick={() => setSelectedStorage(storage)}
+                    className={`sm:px-8 sm:py-3 px-4 py-2 rounded-lg border text-sm font-medium transition ${selectedStorage === storage
+                        ? 'border-black text-black bg-white shadow-sm'
+                        : 'border-gray-300 text-gray-500 hover:border-gray-400'
+                      }`}
                   >
                     {storage}
                   </button>
@@ -195,7 +200,7 @@ const Details = ({ product }) => {
             </p>
 
             {/* Buttons */}
-            <div className="flex gap-4 mt-2">
+            <div className="sm:flex sm:flex-row flex flex-col gap-4 mt-2">
               <button className="flex-1 py-4 rounded-lg border border-black font-semibold text-black hover:bg-gray-400 cursor-pointer transition">
                 Add to Wishlist
               </button>
@@ -209,10 +214,28 @@ const Details = ({ product }) => {
             </div>
 
             {/* Delivery Icons */}
-            <div className="flex justify-between mt-3 text-xs text-gray-500">
-              <InfoItem icon="🚚" title="Free Delivery" sub="1-2 day" />
-              <InfoItem icon="🏠" title="In Stock" sub="Today" />
-              <InfoItem icon="🛡️" title="Guaranteed" sub="1 year" />
+            <div className="flex justify-between sm:text-left text-center mt-3 text-xs text-gray-500">
+              <div className='sm:flex gap-4 '>
+                <img src="/images/delivery.svg" alt="" className='pl-4 sm:pl-0' />
+                <div className='text-sm font-semibold' >
+                  <p className='text-[#717171]'>Free Delivery </p>
+                  <p className="mt-1 text-black">1-2 day</p>
+                </div>
+              </div>
+              <div className='sm:flex gap-4'>
+                <img src="/images/stock.svg" alt="" />
+                <div className=' text-sm font-semibold' >
+                  <p className='text-[#717171]'>In Stock </p>
+                  <p className="mt-1 text-black">Today</p>
+                </div>
+              </div>
+              <div className='sm:flex gap-4'>
+                <img src="/images/Guaranteed.svg" alt="" className='pl-3 sm:pl-0' />
+                <div className=' text-sm font-semibold' >
+                  <p className='text-[#717171]'>Guaranteed </p>
+                  <p className="mt-1 text-black">1 Year</p>
+                </div>
+              </div>
             </div>
 
           </div> {/* END RIGHT COLUMN */}
@@ -225,7 +248,7 @@ const Details = ({ product }) => {
       {/* SECTION 2: BOTTOM DETAILS BOX (Full Width) */}
       {/* ========================================== */}
       <div className="w-full bg-[#FAFAFA] py-16 mt-10">
-        <div className="max-w-[80%] bg-white mx-auto px-4 py-8 md:px-8">
+        <div className="sm:max-w-[80%] max-w-[90%] rounded-lg s bg-white mx-auto px-4 py-8 md:px-8">
 
           <h3 className="text-3xl font-bold mb-10 text-gray-900">Details</h3>
 
@@ -270,12 +293,12 @@ const Details = ({ product }) => {
       {/* ========================================== */}
       {/* SECTION 3: FULL REVIEWS SECTION            */}
       {/* ========================================== */}
-      <div className="max-w-[80%] mx-auto px-4 md:px-0 mt-16 mb-20">
+      <div className="max-w-[100%] sm:max-w-[80%] mx-auto px-4 md:px-0 mt-16 mb-20">
 
         <h3 className="text-2xl font-bold mb-8 text-gray-900">Reviews</h3>
 
         {/* --- REVIEW SUMMARY & DISTRIBUTION GRID --- */}
-        <div className="grid grid-cols-[150px_1fr] bg-white mb-10">
+        <div className="grid sm:grid-cols-[150px_1fr] bg-white mb-10">
 
           {/* LEFT: Overall Rating */}
           <div className="flex flex-col items-center justify-center w-full bg-[#F9F9F9] rounded-xl text-center p-4">

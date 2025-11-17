@@ -27,9 +27,9 @@ const StepHeader = () => {
                 </div>
             </div>
 
-            <div className="flex items-center sm:block hidden text-center text-gray-400">
+            <div className="flex items-center sm:flex hidden text-center text-gray-400">
                 <div className="w-8 h-8 flex items-center justify-center">
-                    <img src="/images/payment.svg" alt="" />
+                    <img src="/images/Payment-12.svg" alt="" />
                 </div>
                 <div className="ml-2 text-[#B2B2B2]">
                     <p className="font-semibold mt-2">Step 3</p>
@@ -140,9 +140,9 @@ export default function Address({
                             />
 
                             {/* Custom Radio */}
-                            <div className="w-6 h-5 border-2 border-gray-400 rounded-full flex items-center justify-center mt-1">
+                            <div className="w-6 h-5  sm:w-6 sm:h-6 border-2 border-gray-400 rounded-full flex items-center justify-center mt-1">
                                 {selected === item.id && (
-                                    <div className="w-3 h-3 bg-black rounded-full"></div>
+                                    <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 bg-black rounded-full"></div>
                                 )}
                             </div>
 
