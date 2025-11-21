@@ -10,10 +10,10 @@ export default function Footer() {
                     <div className="mb-6 md:mb-0">
                         <img src="/images/footer-logo.svg"
                             alt=""
-                            className="w-[65px] h-[32px] mb-4  mx-auto  md:mx-0" 
+                            className="w-[65px] h-[32px] mb-4  mx-auto  md:mx-0"
                         />
                         <p className="text-[#`CFCFCF] font-medium sm:text-sm  text-[13px] sm:text-start text-center md:w-[384px]">We are a residential interior design firm located in Portland. Our boutique-studio offers more than</p>
-                    </div> 
+                    </div>
                     <div className="mb-6  sm:text-start text-center">
                         <h3 className="text-base font-semibold  sm:mb-8 mb-4">Services</h3>
                         <ul className="">
@@ -41,6 +41,8 @@ export default function Footer() {
                     <img src="/images/facebook.svg" alt="Facebook" className="w-6 h-6 cursor-pointer" />
                     <img src="/images/tiktok.svg" alt="Tiktok" className="w-6 h-6 cursor-pointer" />
                     <img src="/images/instagram.svg" alt="Instagram" className="w-6 h-6 cursor-pointer" />
+
+
                 </div>
             </div>
         </footer >

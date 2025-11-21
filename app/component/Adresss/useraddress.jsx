@@ -7,17 +7,17 @@ import { useRouter } from "next/navigation"; // Import router
 const StepHeader = () => {
     return (
         <div className=" flex justify-between gap-18 sm:gap-0 items-center mr-12 sm:mt-6 sm:mb-25 mb-14">
-            <div className="flex items-center text-center">
+            <div className="flex items-center text-left">
                 <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center">
                     <MapPin size={14} />
-                </div>
+                </div>  
                 <div className="ml-2">
                     <p className="font-medium text-black mt-2">Step 1</p>
                     <p className="text-lg text-gray-900 font-semibold">Address</p>
                 </div>
             </div>
 
-            <div className="flex items-center text-center text-gray-400">
+            <div className="flex items-center text-left text-gray-400">
                 <div className="w-8 h-8 flex items-center justify-center">
                     <img src="/images/shipping.svg" alt="" />
                 </div>
@@ -27,7 +27,7 @@ const StepHeader = () => {
                 </div>
             </div>
 
-            <div className="flex items-center sm:flex hidden text-center text-gray-400">
+            <div className="flex items-center sm:flex hidden text-left text-gray-400">
                 <div className="w-8 h-8 flex items-center justify-center">
                     <img src="/images/Payment-12.svg" alt="" />
                 </div>
@@ -219,7 +219,7 @@ export default function Address({
                         </h3>
 
                         <input
-                            placeholder="Country Name..."
+                            placeholder="Name..."
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             className="w-full border p-2 text-black rounded mb-3"

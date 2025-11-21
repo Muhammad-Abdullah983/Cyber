@@ -5,16 +5,16 @@ import Link from "next/link";
 
 export default function BrowseByCategory({ title, categories }) {
     return (
-        <section className="w-full bg-[#FAFAFA] py-10 px-4">
+        <section className="w-full bg-[#FAFAFA] py-10 px-6">
             <div className="max-w-6xl mx-auto">
                 {/* Heading */}
                 <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl sm:text-2xl font-medium text-[#000000] mb-6">
+                    <h2 className="text-2xl  font-medium text-[#000000] mb-6">
                         {title}
                     </h2>
                     <div className="flex items-center gap-4 mb-6 mr-4">
-                        <img src="/images/leftarrow.svg" alt="" className="h-6" />
-                        <img src="/images/rightarrow.svg" alt="" className="ml-4 h-6" />
+                        <img src="/images/leftarrow.svg" alt="" className="sm:h-6 h-5" />
+                        <img src="/images/rightarrow.svg" alt="" className="ml-4 sm:h-6 h-5" />
                     </div>
                 </div>
 

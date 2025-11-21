@@ -4,6 +4,7 @@ import { IoChevronForward, IoHeartOutline, IoHeart, IoCheckmarkCircle } from "re
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '../CartDetails/cart';
+import { useWishlist } from '../Wishlist/Wishlist';
 
 const Details = ({ product }) => {
   // === 1. SAFETY GUARD ===
@@ -18,9 +19,9 @@ const Details = ({ product }) => {
   // === 2. STATE ===
   const [mainImage, setMainImage] = useState(product.images[0] || product.thumbnail);
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [wishlist, setWishlist] = useState({}); // Manage wishlist for related items
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedStorage, setSelectedStorage] = useState('256GB'); // Track selected storage
+  const { wishlist, toggleWishlist } = useWishlist();
 
   // Calculate fake original price
   const originalPrice = Math.round(product.price * 1.2);
@@ -46,11 +47,6 @@ const Details = ({ product }) => {
     }
     fetchRelated();
   }, [product.category, product.id]);
-
-  // Wishlist toggle helper
-  const toggleWishlist = (id) => {
-    setWishlist(prev => ({ ...prev, [id]: !prev[id] }));
-  };
 
   // get addToCart function from context
   const { addToCart } = useCart();
@@ -174,8 +170,8 @@ const Details = ({ product }) => {
                     key={i}
                     onClick={() => setSelectedStorage(storage)}
                     className={`sm:px-8 sm:py-3 px-4 py-2 rounded-lg border text-sm font-medium transition ${selectedStorage === storage
-                        ? 'border-black text-black bg-white shadow-sm'
-                        : 'border-gray-300 text-gray-500 hover:border-gray-400'
+                      ? 'border-black text-black bg-white shadow-sm'
+                      : 'border-gray-300 text-gray-500 hover:border-gray-400'
                       }`}
                   >
                     {storage}
@@ -201,8 +197,11 @@ const Details = ({ product }) => {
 
             {/* Buttons */}
             <div className="sm:flex sm:flex-row flex flex-col gap-4 mt-2">
-              <button className="flex-1 py-4 rounded-lg border border-black font-semibold text-black hover:bg-gray-400 cursor-pointer transition">
-                Add to Wishlist
+              <button
+                onClick={() => toggleWishlist(product.id)}
+                className="flex-1 py-4 rounded-lg border border-black font-semibold text-black hover:bg-gray-400 cursor-pointer transition"
+              >
+                {wishlist.includes(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
               </button>
               <button
                 onClick={handleAddToCart}
@@ -434,7 +433,7 @@ const Details = ({ product }) => {
                   onClick={() => toggleWishlist(relatedProduct.id)}
                   className="absolute top-4 right-4 z-10 text-2xl text-gray-400 hover:text-red-500 transition-colors"
                 >
-                  {wishlist[relatedProduct.id] ? (
+                  {wishlist.includes(relatedProduct.id) ? (
                     <IoHeart className="text-red-500" />
                   ) : (
                     <IoHeartOutline />

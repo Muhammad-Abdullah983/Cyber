@@ -1,17 +1,12 @@
 "use client";
-import { useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import Image from "next/image";
+import Link from "next/link";
+import { useWishlist } from "./Wishlist/Wishlist";
 
 export default function AllProducts({ data = [] }) {
-  const [wishlist, setWishlist] = useState([]);
-
-  const toggleWishlist = (id) => {
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
+  const { wishlist, toggleWishlist } = useWishlist();
 
   return (
     <section className="bg-white items-left  py-8">
@@ -29,63 +24,71 @@ export default function AllProducts({ data = [] }) {
       </div>
 
       {/* 🛍️ Product Grid */}
-      <div className="grid grid-cols-2  sm:flex sm:flex-wrap  justify-center sm:gap-6 gap-4 p-4">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center sm:gap-6 gap-4 p-4">
         {data.map((item) => {
           const isWishlisted = wishlist.includes(item.id);
 
-          // Normalize image source for different APIs (fakestore uses `image`, dummyjson uses `thumbnail` or `images[0]`)
-          const imageSrc = item.image ?? item.thumbnail ?? (item.images && item.images[0]) ?? null;
+          const imageSrc =
+            item.image ??
+            item.thumbnail ??
+            (item.images && item.images[0]) ??
+            null;
 
           return (
-            <div
-              key={item.id}
-              className="relative w-[163px] h-[350px] sm:w-[268px] sm:h-[406px] bg-[#F6F6F6] shadow-md rounded-[9px] flex flex-col overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-transform duration-300"
-            >
-              {/* ❤️ Wishlist Icon */}
-              <button
-                onClick={() => toggleWishlist(item.id)}
-                className="absolute top-3 right-3 z-10 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition"
-                aria-label="Add to wishlist"
+            <Link key={item.id} href={`/Details/${item.id}`}>
+              <div
+                className="relative w-[163px] h-[350px] sm:w-[268px] sm:h-[406px] bg-[#F6F6F6] shadow-md rounded-[9px] flex flex-col overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-transform duration-300 cursor-pointer"
               >
-                {isWishlisted ? (
-                  <FaHeart className="text-red-500 text-lg" />
-                ) : (
-                  <FiHeart className="text-gray-600 text-lg" />
-                )}
-              </button>
-
-              {/* Product Image */}
-              <div className="relative w-full h-[60%]">
-                {imageSrc ? (
-                  <Image
-                    src={imageSrc}
-                    alt={item.title}
-                    fill
-                    className="object-contain p-4"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-500 bg-gray-100">
-                    No image
-                  </div>
-                )}
-              </div>
-
-              {/* Product Details */}
-              <div className="p-4 flex-1 flex flex-col text-black justify-between">
-                <div className="text-center">
-                  <h2 className="text-base text-[#000000] font-medium line-clamp-2 mb-2">
-                    {item.title}
-                  </h2>
-                  <p className="text-2xl font-semibold text-[#000000]">
-                    ${item.price}
-                  </p>
-                </div>
- 
-                <button className="mt-4 px-6 py-3 w-[139px] sm:w-[183px] sm:h-12 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 transition block mx-auto">
-                  Buy Now
+                {/* ❤️ Wishlist Icon */}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleWishlist(item.id);
+                  }}
+                  className="absolute top-3 right-3 z-10 rounded-full p-2 hover:bg-gray-100 transition"
+                  aria-label="Add to wishlist"
+                >
+                  {isWishlisted ? (
+                    <FaHeart className="text-red-500 text-xl" />
+                  ) : (
+                    <FiHeart className="text-gray-600 text-xl" />
+                  )}
                 </button>
+
+                {/* Product Image */}
+                <div className="relative w-full h-[60%]">
+                  {imageSrc ? (
+                    <Image
+                      src={imageSrc}
+                      alt={item.title}
+                      fill
+                      className="object-contain p-4"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500 bg-gray-100">
+                      No image
+                    </div>
+                  )}
+                </div>
+
+                {/* Product Details */}
+                <div className="p-4 flex-1 flex flex-col text-black justify-between">
+                  <div className="text-center">
+                    <h2 className="text-base text-[#000000] font-medium line-clamp-2 mb-2">
+                      {item.title}
+                    </h2>
+                    <p className="text-2xl font-semibold text-[#000000]">
+                      ${item.price}
+                    </p>
+                  </div>
+
+                  <button className="mt-4 px-6 py-3 w-[139px] sm:w-[183px] sm:h-12 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 transition block mx-auto">
+                    Buy Now
+                  </button>
+                </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

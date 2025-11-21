@@ -42,11 +42,13 @@ export default function CartPage() {
                             <div className="text-center py-20 bg-gray-50 rounded-lg">
                                 <p className="text-gray-500 mb-4 text-lg">Your cart is empty.</p>
                                 <button
-                                    onClick={() => simulateNavigation("/")}
+                                    onClick={() => router.push("/")}
                                     className="px-6 py-3 bg-black text-white rounded-lg font-medium"
                                 >
                                     Continue Shopping
                                 </button>
+
+                            
                             </div>
                         ) : (
                             <div className="space-y-8 ">
@@ -108,7 +110,7 @@ export default function CartPage() {
                                                 <div className="flex-shrink-0">
                                                     <button
                                                         // Replaced icon with "X" and adjusted styling
-                                                        className="text-base font-medium  ml-6 sm:ml-0 text-gray-700 hover:text-red-500 transition-colors w-5 h-5 flex items-center justify-center"
+                                                        className="text-base font-medium  ml-6 sm:ml-2 text-gray-700 hover:text-red-500 cursor-pointer transition-colors w-5 h-5 flex items-center justify-center"
                                                         onClick={() => removeFromCart(item.id)}
                                                         aria-label="Remove item"
                                                     >

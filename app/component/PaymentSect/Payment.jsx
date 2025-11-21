@@ -20,9 +20,9 @@ const formatPrice = (price) => {
 // --- Step Header Component ---
 const StepHeader = () => {
     return (
-        <div className="flex justify-between items-center mr-12 sm:mt-6 mb-14 sm:mb-25">
-            <div className="flex items-center hidden sm:flex text-center">
-                <div className="w-7 h-7 rounded-full bg-gray-300 text-black flex items-center justify-center">
+        <div className="flex justify-between   items-center  mr-12 sm:mt-6 mb-14 sm:mb-25">
+            <div className="flex items-center hidden sm:flex sm:text-left text-left">
+                <div className="w-6 h-6 rounded-full bg-gray-300 text-white flex items-center justify-center">
                     <MapPin size={14} />
                 </div>
                 <div className="ml-2 text-[#B2B2B2]">
@@ -31,7 +31,7 @@ const StepHeader = () => {
                 </div>
             </div>
 
-            <div className="flex items-center text-center text-gray-400">
+            <div className="flex items-center text-left text-gray-400">
                 <div className="w-8 h-8 flex items-center justify-center">
                     <img src="/images/shipping.svg" alt="" />
                 </div>
@@ -41,7 +41,7 @@ const StepHeader = () => {
                 </div>
             </div>
 
-            <div className="flex items-center text-center text-gray-400">
+            <div className="flex items-center text-left text-gray-400">
                 <div className="w-8 h-8 flex items-center justify-center">
                     <img src="/images/payment-black.svg" alt="" />
                 </div>
