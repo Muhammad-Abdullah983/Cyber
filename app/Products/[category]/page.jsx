@@ -81,6 +81,9 @@ export default function CategoryPage() {
           cameras: "fragrances",
           headphones: "mobile-accessories",
           gaming: "sports-accessories",
+          Furniture:"furniture",
+          
+  
         };
 
         const apiCategory = categoryMap[category?.toLowerCase()] || category?.toLowerCase();

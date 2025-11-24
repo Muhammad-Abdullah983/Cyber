@@ -6,7 +6,7 @@ import ProductsSection from "./component/Apple-Products";
 import BrowseByCategory from "./component/category";
 import AllProducts from "./component/AllProducts";
 import Discountcards from "./component/Discounts-cards";
-import { Smartphone, Watch, Camera, Headphones, Monitor, Gamepad2 } from "lucide-react";
+import { Smartphone, Watch, Camera, Headphones, Monitor, Gamepad2, ShoppingBag } from "lucide-react";
 import PopularProducts from "./component/Popular-Products";
 import SummerSale from "./component/Summersale";
 
@@ -40,40 +40,59 @@ export default function Page() {
   const nextFour = data.slice(8, 12);
 
   const categories = [
-    { icon: <Smartphone size={32} className="text-[#000000]" />, label: "Phones" }, 
+    { icon: <Smartphone size={32} className="text-[#000000]" />, label: "Phones" },
     { icon: <Watch size={32} className="text-[#000000]" />, label: "SmartWatches" },
     { icon: <Camera size={32} className="text-[#000000]" />, label: "Cameras" },
     { icon: <Headphones size={32} className="text-[#000000]" />, label: "Headphones" },
     { icon: <Monitor size={32} className="text-[#000000]" />, label: "Computers" },
     { icon: <Gamepad2 size={32} className="text-[#000000]" />, label: "Gaming" },
+    { icon: <ShoppingBag size={32} className="text-[#000000]" />, label: "Furniture" },
+    { icon: <Monitor size={32} className="text-[#000000]" />, label: "Accessories" },
   ];
 
   const popularProducts = [
     {
       title: "Popular Products",
       desc: "iPad combines a magnificent 10.2-inch Retina display, incredible performance, multitasking and ease of use.",
-      image: "/images/Watch+airpods.svg",
+      desktopImage: "/images/Watch+airpods.svg",
+      mobileImage: "/images/Watch+airpods.svg",
       bgColor: "bg-[#FFFFFF]",
-    },
-    {
-      title: "Ipad Pro",
-      desc: "iPad combines a magnificent 10.2-inch Retina display, incredible performance, multitasking and ease of use.",
-      image: "/images/ipadpro.svg",
-      bgColor: "bg-[#F9F9F9]",
     },
     {
       title: "Samsung Galaxy",
       desc: "iPad combines a magnificent 10.2-inch Retina display, incredible performance, multitasking and ease of use.",
-      image: "/images/samsung-galaxy.svg",
+      desktopImage: "/images/samsung-galaxy.svg",
+      mobileImage: "/images/samsung-galaxy.svg",
       bgColor: "bg-[#EAEAEA]",
+    },
+    {
+      title: "Ipad Pro",
+      desc: "iPad combines a magnificent 10.2-inch Retina display, incredible performance, multitasking and ease of use.",
+      desktopImage: "/images/ipadpro.svg",
+      mobileImage: "/images/mobile/ipad.svg",
+      bgColor: "bg-[#F9F9F9]",
     },
     {
       title: "MacBook Pro",
       desc: "iPad combines a magnificent 10.2-inch Retina display, incredible performance, multitasking and ease of use.",
-      image: "/images/Mackbook-Pro.svg",
+      desktopImage: "/images/Mackbook-Pro.svg",
+      mobileImage: "/images/Mackbook-Pro.svg",
       bgColor: "bg-[#2C2C2C]",
     },
+
+
   ];
+  // Mobile-only reordered array: iPad Pro should appear first
+  const mobilePopular = [
+    popularProducts[2], // iPad Pro
+    popularProducts[0], // Popular Products
+    popularProducts[1], // Samsung Galaxy
+    popularProducts[3], // MacBook Pro
+  ];
+
+
+  // Start carousel on the first item (MacBook) so iPad appears as the second item
+  const [mobileIndex, setMobileIndex] = useState(0);
 
   return (
     <main className="bg-white text-black">
@@ -85,16 +104,24 @@ export default function Page() {
 
       {/* Popular Products Section */}
       <div className="flex flex-wrap">
-        {/* Mobile: only iPad box */}
+        {/* Mobile: carousel that shows each popular product one at a time */}
         <div className="w-full block sm:hidden">
-          <PopularProducts
-            title="Ipad Pro"
-            desc="iPad combines a magnificent 10.2-inch Retina display, incredible performance, multitasking and ease of use."
-            desktopImage="/images/ipadpro.svg"
-            mobileImage="/images/mobile/ipad.svg"
-            bgColor="bg-[#F9F9F9]"
-          />
+          {mobilePopular.length > 0 && (
+            <>
+              <PopularProducts
+                title={mobilePopular[mobileIndex].title}
+                desc={mobilePopular[mobileIndex].desc}
+                desktopImage={mobilePopular[mobileIndex].desktopImage}
+                mobileImage={mobilePopular[mobileIndex].mobileImage}
+                bgColor={mobilePopular[mobileIndex].bgColor}
+                mobileIndex={mobileIndex}
+                setMobileIndex={setMobileIndex}
+                dotsCount={mobilePopular.length}
+              />
+            </>
+          )}
         </div>
+
 
 
 
@@ -104,8 +131,8 @@ export default function Page() {
             <PopularProducts
               title={box.title}
               desc={box.desc}
-              desktopImage={box.image}  // updated to match component props
-              mobileImage={box.image}   // optional, or same image for desktop mapping
+              desktopImage={box.desktopImage}
+              mobileImage={box.mobileImage}
               bgColor={box.bgColor}
             />
           </div>

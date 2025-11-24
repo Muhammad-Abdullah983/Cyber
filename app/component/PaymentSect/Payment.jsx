@@ -138,7 +138,7 @@ export default function PaymentSection() {
             <div className="grid grid-cols-1 lg:grid-cols-6 gap-16">
 
                 {/* LEFT COLUMN */}
-                <div className="lg:col-span-3 hidden sm:block flex flex-col">
+                <div className="lg:col-span-3 hidden sm:block flex flex-col border p-6 border-[#EBEBEB] rounded-[10px]">
                     <h2 className="text-[20px] text-black font-medium mb-6">Summary</h2>
 
                     {/* Cart Items */}

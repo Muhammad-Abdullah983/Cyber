@@ -1,17 +1,9 @@
-// global css import '
-import "../globals.css";
-import { CartProvider } from "../component/CartDetails/cart";
+import ProtectedRoute from "../component/ProtectedRoute";
 
-
-export default function RootLayout({ children }) {
+export default function CartLayout({ children }) {
   return (
-    <html lang="en">
-      <body>
-        <CartProvider>
-           
-          {children}
-        </CartProvider>
-      </body>
-    </html>
+    <ProtectedRoute>
+      {children}
+    </ProtectedRoute>
   );
 }

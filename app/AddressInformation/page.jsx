@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import ProtectedRoute from "../component/ProtectedRoute";
 import Address from "../component/Adresss/useraddress";
 
 export default function AddressPage() {
@@ -68,18 +68,20 @@ export default function AddressPage() {
     };
 
     return (
-        <div>
-            <Address
-                addresses={addresses}
-                selected={selected}
-                setSelected={setSelected}
-                addAddress={addAddress}
-                deleteAddress={deleteAddress}
-                updateAddress={updateAddress}
+        <ProtectedRoute>
+            <div>
+                <Address
+                    addresses={addresses}
+                    selected={selected}
+                    setSelected={setSelected}
+                    addAddress={addAddress}
+                    deleteAddress={deleteAddress}
+                    updateAddress={updateAddress}
 
-                // ⭐ PASS THE CONTINUE HANDLER TO CHILD
-                onContinue={handleContinue}
-            />
-        </div>
+                    // ⭐ PASS THE CONTINUE HANDLER TO CHILD
+                    onContinue={handleContinue}
+                />
+            </div>
+        </ProtectedRoute>
     );
 }

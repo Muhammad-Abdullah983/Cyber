@@ -1,5 +1,6 @@
 'use client';
 import Image from "next/image";
+import { FaTwitter, FaFacebook, FaTiktok, FaInstagram } from "react-icons/fa";
 export default function Footer() {
     return (
         <footer className="bg-[#000000] text-white  py-20">
@@ -37,10 +38,13 @@ export default function Footer() {
                 </div>
                 {/* icons */}
                 <div className="flex md:w-[173px] w-[173px] sm:mx-0 mx-auto justify-between">
-                    <img src="/images/twitter.svg" alt="Twitter" className="w-6 h-6 cursor-pointer" />
-                    <img src="/images/facebook.svg" alt="Facebook" className="w-6 h-6 cursor-pointer" />
-                    <img src="/images/tiktok.svg" alt="Tiktok" className="w-6 h-6 cursor-pointer" />
-                    <img src="/images/instagram.svg" alt="Instagram" className="w-6 h-6 cursor-pointer" />
+                    <div className="flex items-center gap-8">
+                        <FaTwitter className="w-6 h-6 cursor-pointer" />
+                        <FaFacebook className="w-6 h-6 cursor-pointer" />
+                        <FaTiktok className="w-6 h-6 cursor-pointer" />
+                        <FaInstagram className="w-6 h-6 cursor-pointer" />
+                    </div>
+
 
 
                 </div>

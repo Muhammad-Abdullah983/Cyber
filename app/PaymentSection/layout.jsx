@@ -1,23 +1,9 @@
-import "../globals.css";
-import { CartProvider } from "../component/CartDetails/cart";
-// Import fonts (example)
-import { Inter } from "next/font/google";
+import ProtectedRoute from "../component/ProtectedRoute";
 
-const inter = Inter({ subsets: ["latin"] });
-
-
-export default function RootLayout({ children }) {
+export default function PaymentLayout({ children }) {
     return (
-        <html lang="en">
-            <body className={inter.className}>
-
-
-                <CartProvider>
-
-                    <main>{children}</main>
-                    {/* You could add a Footer component here if you have one */}
-                </CartProvider>
-            </body>
-        </html>
+        <ProtectedRoute>
+            {children}
+        </ProtectedRoute>
     );
 }

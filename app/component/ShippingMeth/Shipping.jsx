@@ -29,7 +29,7 @@ const StepHeader = () => {
 
             <div className="flex items-center text-left text-gray-400">
                 <div className="w-8 h-8 flex items-center justify-center">
-                    <img src="/images/payment-12.svg" alt="" />
+                    <img src="/images/Payment.png" alt="" />
                 </div>
                 <div className="ml-2 text-[#B2B2B2]">
                     <p className="font-semibold mt-2">Step 3</p>

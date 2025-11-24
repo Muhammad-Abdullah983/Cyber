@@ -215,14 +215,14 @@ const Details = ({ product }) => {
             {/* Delivery Icons */}
             <div className="flex justify-between sm:text-left text-center mt-3 text-xs text-gray-500">
               <div className='sm:flex gap-4 '>
-                <img src="/images/delivery.svg" alt="" className='pl-4 sm:pl-0' />
+                <img src="/images/Delivery.svg" alt="" className='pl-4 sm:pl-0' />
                 <div className='text-sm font-semibold' >
                   <p className='text-[#717171]'>Free Delivery </p>
                   <p className="mt-1 text-black">1-2 day</p>
                 </div>
               </div>
               <div className='sm:flex gap-4'>
-                <img src="/images/stock.svg" alt="" />
+                <img src="/images/Stock.svg" alt="" />
                 <div className=' text-sm font-semibold' >
                   <p className='text-[#717171]'>In Stock </p>
                   <p className="mt-1 text-black">Today</p>
