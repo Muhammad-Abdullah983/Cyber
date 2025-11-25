@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { getAuthInstance } from "@/Lib/firebase";
-import { getFirebaseErrorMessage } from "@/app/component/firebaseErrors";
+import { useAuth } from "@/app/component/AuthContext";
+import { getFirebaseErrorMessage } from "../../component/firebaseErrors";
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("");
@@ -12,6 +11,7 @@ export default function ForgotPasswordPage() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { sendResetEmail } = useAuth();
 
     const handleResetPassword = async (e) => {
         e.preventDefault();
@@ -20,14 +20,11 @@ export default function ForgotPasswordPage() {
         setLoading(true);
 
         try {
-            const clientAuth = getAuthInstance();
-            if (!clientAuth) throw new Error("Auth not initialized");
-
-            await sendPasswordResetEmail(clientAuth, email);
+            await sendResetEmail(email);
             setMessage("Password reset email sent! Please check your inbox.");
             setEmail(""); // Clear the form
         } catch (err) {
-            const errorMessage = getFirebaseErrorMessage(err.code);
+            const errorMessage = err && err.code ? getFirebaseErrorMessage(err.code) : err?.message || "Failed to send reset email";
             setError(errorMessage);
         } finally {
             setLoading(false);

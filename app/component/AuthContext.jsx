@@ -1,69 +1,104 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    onAuthStateChanged,
+    signOut,
+    sendPasswordResetEmail,
+    updateProfile as fbUpdateProfile,
+    updatePassword as fbUpdatePassword,
+    deleteUser as fbDeleteUser,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+} from "firebase/auth";
+import { getAuthInstance, getGoogleProvider } from "@/Lib/firebase";
 
 const AuthContext = createContext();
 
-// Simple mock user used to keep the app behaving as "signed in".
-const MOCK_USER = {
-    uid: "mock-uid",
-    email: "demo@example.com",
-    displayName: "Demo User",
-    metadata: {
-        creationTime: new Date().toISOString(),
-        lastSignInTime: new Date().toISOString(),
-    },
-    providerData: [{ providerId: "password" }],
-};
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-export const AuthProvider = ({ children, provideMock = true }) => {
-    const [user, setUser] = useState(provideMock ? MOCK_USER : null);
-    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const auth = getAuthInstance();
+        if (!auth) {
+            setLoading(false);
+            return;
+        }
 
-    // Mocked auth methods: return Promises so pages can await them.
+        const unsub = onAuthStateChanged(auth, (u) => {
+            setUser(u || null);
+            setLoading(false);
+        });
+
+        return () => unsub();
+    }, []);
+
     const signup = async (email, password) => {
-        // Simulate network latency
-        await new Promise((r) => setTimeout(r, 250));
-        setUser({ ...MOCK_USER, email, displayName: "New User" });
-        return { user: { email } };
+        const auth = getAuthInstance();
+        if (!auth) throw new Error("Auth not initialized");
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        setUser(result.user);
+        return result;
     };
 
     const login = async (email, password) => {
-        await new Promise((r) => setTimeout(r, 250));
-        setUser({ ...MOCK_USER, email, displayName: "Signed In" });
-        return { user: { email } };
+        const auth = getAuthInstance();
+        if (!auth) throw new Error("Auth not initialized");
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        setUser(result.user);
+        return result;
     };
 
     const loginWithGoogle = async () => {
-        await new Promise((r) => setTimeout(r, 250));
-        setUser({ ...MOCK_USER, displayName: "Google User" });
-        return { user: MOCK_USER };
+        const auth = getAuthInstance();
+        const provider = getGoogleProvider();
+        if (!auth || !provider) throw new Error("Auth or Google provider not initialized");
+        const result = await signInWithPopup(auth, provider);
+        setUser(result.user);
+        return result;
     };
 
     const sendResetEmail = async (email) => {
-        await new Promise((r) => setTimeout(r, 200));
-        return true;
+        const auth = getAuthInstance();
+        if (!auth) throw new Error("Auth not initialized");
+        return sendPasswordResetEmail(auth, email);
     };
 
     const updateProfileInfo = async (updates) => {
-        setUser((u) => ({ ...u, ...updates }));
+        const auth = getAuthInstance();
+        if (!auth || !auth.currentUser) throw new Error("Not authenticated");
+        await fbUpdateProfile(auth.currentUser, updates);
+        // refresh local user
+        setUser({ ...auth.currentUser });
         return true;
     };
 
     const changePassword = async (currentPassword, newPassword) => {
-        await new Promise((r) => setTimeout(r, 200));
+        const auth = getAuthInstance();
+        if (!auth || !auth.currentUser) throw new Error("Not authenticated");
+        const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
+        await reauthenticateWithCredential(auth.currentUser, credential);
+        await fbUpdatePassword(auth.currentUser, newPassword);
         return true;
     };
 
     const deleteAccount = async () => {
-        await new Promise((r) => setTimeout(r, 200));
+        const auth = getAuthInstance();
+        if (!auth || !auth.currentUser) throw new Error("Not authenticated");
+        await fbDeleteUser(auth.currentUser);
         setUser(null);
         return true;
     };
 
     const logout = async () => {
+        const auth = getAuthInstance();
+        if (!auth) return;
+        await signOut(auth);
         setUser(null);
-        return true;
     };
 
     return (

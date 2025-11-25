@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateProfile, updatePassword, deleteUser, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
-import { getAuthInstance } from "@/Lib/firebase";
 import { useAuth } from "@/app/component/AuthContext";
 import ProtectedRoute from "@/app/component/ProtectedRoute";
 
 export default function ProfilePage() {
-    const { user, logout } = useAuth();
+    const { user, logout, updateProfileInfo, changePassword, deleteAccount } = useAuth();
     const [displayName, setDisplayName] = useState(user?.displayName || "");
     const [newPassword, setNewPassword] = useState("");
     const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -26,16 +24,10 @@ export default function ProfilePage() {
         setLoading(true);
 
         try {
-            const clientAuth = getAuthInstance();
-            if (!clientAuth || !clientAuth.currentUser) throw new Error("Not authenticated");
-
-            await updateProfile(clientAuth.currentUser, {
-                displayName: displayName,
-            });
-
+            await updateProfileInfo({ displayName });
             setMessage("Profile updated successfully!");
         } catch (err) {
-            setError(err.message || "Failed to update profile");
+            setError(err?.message || "Failed to update profile");
         } finally {
             setLoading(false);
         }
@@ -60,28 +52,16 @@ export default function ProfilePage() {
         }
 
         try {
-            const clientAuth = getAuthInstance();
-            if (!clientAuth || !clientAuth.currentUser) throw new Error("Not authenticated");
-
-            // For security, reauthenticate before changing password
-            const credential = EmailAuthProvider.credential(
-                clientAuth.currentUser.email,
-                currentPassword
-            );
-            await reauthenticateWithCredential(clientAuth.currentUser, credential);
-
-            // Change password
-            await updatePassword(clientAuth.currentUser, newPassword);
-
+            await changePassword(currentPassword, newPassword);
             setMessage("Password changed successfully!");
             setCurrentPassword("");
             setNewPassword("");
             setConfirmNewPassword("");
         } catch (err) {
-            if (err.code === "auth/wrong-password") {
+            if (err?.code === "auth/wrong-password") {
                 setError("Current password is incorrect");
             } else {
-                setError(err.message || "Failed to change password");
+                setError(err?.message || "Failed to change password");
             }
         } finally {
             setLoading(false);
@@ -94,16 +74,13 @@ export default function ProfilePage() {
         setLoading(true);
 
         try {
-            const clientAuth = getAuthInstance();
-            if (!clientAuth || !clientAuth.currentUser) throw new Error("Not authenticated");
-
-            await deleteUser(clientAuth.currentUser);
+            await deleteAccount();
             router.push("/");
         } catch (err) {
-            if (err.code === "auth/requires-recent-login") {
+            if (err?.code === "auth/requires-recent-login") {
                 setError("For security, please log out and log back in before deleting your account");
             } else {
-                setError(err.message || "Failed to delete account");
+                setError(err?.message || "Failed to delete account");
             }
             setShowDeleteConfirm(false);
         } finally {
@@ -113,7 +90,7 @@ export default function ProfilePage() {
 
     return (
         <ProtectedRoute>
-            <div className="min-h-screen bg-gray-50 py-12 px-4">
+            <div className="min-h-screen bg-gray-50 text-black py-12 px-4">
                 <div className="max-w-3xl mx-auto">
                     <div className="bg-white rounded-xl shadow-lg p-8">
                         <h1 className="text-3xl font-bold mb-2">Account Settings</h1>
@@ -223,7 +200,6 @@ export default function ProfilePage() {
 
                         {/* Danger Zone */}
                         <div>
-                            <h2 className="text-xl font-semibold mb-4 text-red-600">Danger Zone</h2>
                             {!showDeleteConfirm ? (
                                 <button
                                     onClick={() => setShowDeleteConfirm(true)}

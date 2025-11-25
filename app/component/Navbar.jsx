@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useCart } from "./CartDetails/cart";
 import { useWishlist } from "./Wishlist/Wishlist";
 import { useAuth } from "./AuthContext";
+// Auth links removed from navbar per request
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -83,7 +84,7 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* USER ACCOUNT ICON - WITH AUTH LOGIC */}
+            {/* USER ACCOUNT ICON - SHOW REAL USER */}
             {user ? (
               <div className="relative">
                 <button
@@ -121,9 +122,26 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <Link href="/Auth/login">
-                <FiUser className="text-xl cursor-pointer hover:text-blue-400 transition" />
-              </Link>
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="text-xl cursor-pointer hover:text-blue-400 transition"
+                  aria-label="Account"
+                >
+                  <FiUser />
+                </button>
+
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">Welcome</p>
+                      <p className="text-xs text-gray-500">Please login or create an account</p>
+                    </div>
+                    <Link href="/Auth/login" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Login</Link>
+                    <Link href="/Auth/signup" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Up</Link>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -187,8 +205,7 @@ export default function Navbar() {
                 )}
               </div>
             </Link>
-
-            {/* MOBILE USER ACCOUNT ICON - WITH AUTH LOGIC */}
+            {/* MOBILE USER ACCOUNT ICON */}
             {user ? (
               <div className="relative">
                 <button
@@ -229,9 +246,26 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <Link href="/Auth/login" onClick={() => setMenuOpen(false)}>
-                <FiUser className="text-xl cursor-pointer hover:text-blue-400 transition" />
-              </Link>
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="text-xl cursor-pointer hover:text-blue-400 transition"
+                  aria-label="Account"
+                >
+                  <FiUser />
+                </button>
+
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">Welcome</p>
+                      <p className="text-xs text-gray-500">Please login or create an account</p>
+                    </div>
+                    <Link href="/Auth/login" onClick={() => { setUserMenuOpen(false); setMenuOpen(false); }} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Login</Link>
+                    <Link href="/Auth/signup" onClick={() => { setUserMenuOpen(false); setMenuOpen(false); }} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Up</Link>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>

@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { IoChevronForward, IoHeartOutline, IoHeart, IoCheckmarkCircle } from "react-icons/io5";
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '../AuthContext';
 import { useCart } from '../CartDetails/cart';
 import { useWishlist } from '../Wishlist/Wishlist';
 
@@ -51,7 +52,17 @@ const Details = ({ product }) => {
   // get addToCart function from context
   const { addToCart } = useCart();
   const router = useRouter();
+  const pathname = usePathname();
+  const { user } = useAuth();
   const handleAddToCart = () => {
+    // If the user is not logged in, redirect to login page first
+    if (!user) {
+      // preserve current path so we can return after login
+      const next = pathname || window.location.pathname;
+      router.push(`/Auth/login?next=${encodeURIComponent(next)}`);
+      return;
+    }
+
     // 1. Define cartProduct (This part was missing)
     const cartProduct = {
       id: product.id,
