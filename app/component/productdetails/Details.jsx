@@ -7,6 +7,15 @@ import { useAuth } from '../AuthContext';
 import { useCart } from '../CartDetails/cart';
 import { useWishlist } from '../Wishlist/Wishlist';
 
+// Helper function to proxy images through our API
+const getImageUrl = (originalUrl) => {
+  if (!originalUrl) return '';
+  // If it's already a local image, return as-is
+  if (originalUrl.startsWith('/')) return originalUrl;
+  // Proxy external images through our API
+  return `/api/image?url=${encodeURIComponent(originalUrl)}`;
+};
+
 const Details = ({ product }) => {
   // === 1. SAFETY GUARD ===
   if (!product || !product.images) {
@@ -211,13 +220,13 @@ const Details = ({ product }) => {
                   onClick={() => setMainImage(img)}
                   className={`w-16 h-16 md:w-20 md:h-20  flex-shrink-0 cursor-pointer overflow-hidden transition-all ${mainImage === img ? 'border-black border opacity-100' : 'border-gray-200 opacity-60 hover:opacity-100'}`}
                 >
-                  <img src={img} alt="thumb" className="w-full h-full object-contain bg-white p-1" />
+                  <img src={getImageUrl(img)} alt="thumb" className="w-full h-full object-contain bg-white p-1" />
                 </div>
               ))}
             </div>
             {/* Main Image Area */}
             <div className="flex-1 flex items-center justify-center sm:pb-40 min-h-[350px] md:min-h-[500px] p-8">
-              <img src={mainImage} alt={product.title} className="max-h-[400px] w-full object-contain drop-shadow-xl" />
+              <img src={getImageUrl(mainImage)} alt={product.title} className="max-h-[400px] w-full object-contain drop-shadow-xl" />
             </div>
           </div>
 
@@ -527,7 +536,7 @@ const Details = ({ product }) => {
                 {/* Product Image - Link to Details */}
                 <Link href={`/Details/${relatedProduct.id}`} className="w-full flex justify-center mb-4">
                   <img
-                    src={relatedProduct.thumbnail}
+                    src={getImageUrl(relatedProduct.thumbnail)}
                     alt={relatedProduct.title}
                     className="h-40 object-contain transition-transform duration-300 group-hover:scale-105"
                   />

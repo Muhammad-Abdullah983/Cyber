@@ -11,6 +11,12 @@ import { useWishlist } from "@/app/component/Wishlist/Wishlist";
 import SidebarFilter from "@/app/component/Filter/Filter-sidebar";
 import TextDropdownRow from "@/app/component/Filter/categoryTopbar";
 
+// Helper function to proxy external images through the API to bypass CORS
+const getImageUrl = (imageUrl) => {
+  if (!imageUrl) return '';
+  return `/api/image?url=${encodeURIComponent(imageUrl)}`;
+};
+
 export default function CategoryPage() {
   const { category } = useParams();
   const { wishlist, toggleWishlist } = useWishlist();
@@ -310,7 +316,7 @@ export default function CategoryPage() {
                     {/* --- 2. WRAPPED IMAGE IN LINK --- */}
                     <Link href={`/Details/${item.id}`} className="w-full flex justify-center">
                       <img
-                        src={item.thumbnail}
+                        src={getImageUrl(item.thumbnail)}
                         alt={item.title}
                         className="w-[90%] h-[120px] sm:h-[180px] object-contain rounded-lg mb-4 cursor-pointer"
                       />

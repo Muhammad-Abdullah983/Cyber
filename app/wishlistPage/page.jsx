@@ -6,6 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 
+// Helper function to proxy images
+const getImageUrl = (originalUrl) => {
+    if (!originalUrl) return '';
+    if (originalUrl.startsWith('/')) return originalUrl;
+    return `/api/image?url=${encodeURIComponent(originalUrl)}`;
+};
+
 export default function WishlistPage() {
     const { wishlist, toggleWishlist } = useWishlist();
     const [products, setProducts] = useState([]);
@@ -105,11 +112,10 @@ export default function WishlistPage() {
                                 {/* Product Image */}
                                 <div className="relative w-full h-[150px] sm:h-[200px]">
                                     {product.thumbnail ? (
-                                        <Image
-                                            src={product.thumbnail}
+                                        <img
+                                            src={getImageUrl(product.thumbnail)}
                                             alt={product.title}
-                                            fill
-                                            className="object-contain p-4"
+                                            className="w-full h-full object-contain p-4"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-gray-500 bg-gray-100">
