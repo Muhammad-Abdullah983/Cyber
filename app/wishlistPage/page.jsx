@@ -29,18 +29,26 @@ export default function WishlistPage() {
             try {
                 const productList = await Promise.all(
                     wishlist.map(id =>
-                        fetch(`https://dummyjson.com/products/${id}`)
-                            .then(r => r.json())
+                        fetch(`/api/products/${id}`)
+                            .then(r => {
+                                if (!r.ok) throw new Error(`API error: ${r.status}`);
+                                return r.json();
+                            })
                             .catch(err => {
-                                console.error(`Error fetching product ${id}:`, err);
+                                console.error(`Error fetching product ${id}:`, err.message);
                                 return null;
                             })
                     )
                 );
                 // Filter out any null responses
-                setProducts(productList.filter(p => p !== null));
+                const validProducts = productList.filter(p => p !== null);
+                setProducts(validProducts);
+                if (validProducts.length === 0) {
+                    console.warn("No valid products loaded from wishlist");
+                }
             } catch (error) {
-                console.error("Error fetching wishlisted products:", error);
+                console.error("Error fetching wishlisted products:", error.message);
+                setProducts([]);
             } finally {
                 setLoading(false);
                 setInitialLoad(false);

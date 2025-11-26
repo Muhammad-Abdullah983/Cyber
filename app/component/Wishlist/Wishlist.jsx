@@ -1,15 +1,24 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from "@/app/component/AuthContext";
 
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
+  const { user } = useAuth();
+  const storageKey = user && user.uid ? `wishlist:${user.uid}` : "wishlist:anon";
+
   const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setWishlist(saved);
-  }, []);
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey)) || [];
+      setWishlist(saved);
+    } catch (e) {
+      console.warn("Failed to parse wishlist from localStorage", e);
+      setWishlist([]);
+    }
+  }, [storageKey]);
 
   const toggleWishlist = (id) => {
     setWishlist(prev => {
@@ -18,7 +27,12 @@ export const WishlistProvider = ({ children }) => {
         ? prev.filter(item => item !== id)
         : [...prev, id];
 
-      localStorage.setItem("wishlist", JSON.stringify(updated));
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(updated));
+      } catch (e) {
+        console.warn("Failed to save wishlist to localStorage", e);
+      }
+
       return updated;
     });
   };

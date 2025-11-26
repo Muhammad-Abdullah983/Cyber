@@ -14,9 +14,17 @@ export default function Page() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products?limit=300&skip=0")
-      .then((res) => res.json())
+    fetch("/api/products?limit=300&skip=0")
+      .then((res) => {
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        return res.json();
+      })
       .then((json) => {
+        if (!json.products || !Array.isArray(json.products)) {
+          console.warn("No products found in API response");
+          setData([]);
+          return;
+        }
         const techProducts = json.products.filter((item) =>
           [
             "laptops",
@@ -33,7 +41,10 @@ export default function Page() {
         );
         setData(techProducts);
       })
-      .catch((err) => console.error("Error fetching data:", err));
+      .catch((err) => {
+        console.error("Error fetching products:", err.message);
+        setData([]);
+      });
   }, []);
 
   const firstEight = data.slice(0, 8);

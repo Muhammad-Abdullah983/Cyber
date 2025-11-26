@@ -1,36 +1,47 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from "@/app/component/AuthContext";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
+    // Use auth to namespace storage per-user so different accounts have separate carts
+    const { user } = useAuth();
+    const storageKey = user && user.uid ? `cart:${user.uid}` : "cart:anon";
+
     // 1. Initialize cart state as empty
     const [cart, setCart] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
+
+    // Load cart for the current storageKey whenever it changes (user signs in/out)
     useEffect(() => {
+        setIsLoaded(false);
         try {
-            const saved = localStorage.getItem("cart");
+            const saved = localStorage.getItem(storageKey);
             if (saved) {
                 setCart(JSON.parse(saved));
+            } else {
+                setCart([]);
             }
         } catch (e) {
             console.warn("Failed to parse cart from localStorage", e);
+            setCart([]);
         }
-        // 3. Mark as loaded *after* trying to load
+        // Mark as loaded *after* trying to load
         setIsLoaded(true);
-    }, []); 
+    }, [storageKey]);
 
     useEffect(() => {
-        // 4. Only save to localStorage *after* we have loaded the initial state
+        // Only save to localStorage *after* we have loaded the initial state
         if (isLoaded) {
             try {
-                localStorage.setItem("cart", JSON.stringify(cart));
+                localStorage.setItem(storageKey, JSON.stringify(cart));
             } catch (e) {
                 console.warn("Failed to save cart to localStorage", e);
             }
         }
-    }, [cart, isLoaded]); // Runs when cart or isLoaded changes
+    }, [cart, isLoaded, storageKey]); // Runs when cart or isLoaded or storageKey changes
     const addToCart = (product) => {
         setCart((prev) => {
             const exists = prev.find((item) => item.id === product.id);

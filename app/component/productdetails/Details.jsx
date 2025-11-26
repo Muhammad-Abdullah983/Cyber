@@ -22,6 +22,8 @@ const Details = ({ product }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedStorage, setSelectedStorage] = useState('256GB'); // Track selected storage
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState('login'); // 'login' or 'signup'
   const { wishlist, toggleWishlist } = useWishlist();
 
   // Calculate fake original price
@@ -33,7 +35,12 @@ const Details = ({ product }) => {
       if (!product.category) return;
       try {
         // Fetch a few more to ensure we have enough after filtering
-        const res = await fetch(`https://dummyjson.com/products/category/${product.category}?limit=8`);
+        const res = await fetch(`/api/products?category=${product.category}&limit=8`);
+        if (!res.ok) {
+          console.error(`API error: ${res.status} ${res.statusText}`);
+          setRelatedProducts([]);
+          return;
+        }
         const data = await res.json();
 
         // Filter out the CURRENT product so it doesn't show in related, and take top 4
@@ -43,7 +50,8 @@ const Details = ({ product }) => {
 
         setRelatedProducts(filtered);
       } catch (error) {
-        console.error("Error loading related products", error);
+        console.error("Error loading related products:", error.message);
+        setRelatedProducts([]);
       }
     }
     fetchRelated();
@@ -55,11 +63,9 @@ const Details = ({ product }) => {
   const pathname = usePathname();
   const { user } = useAuth();
   const handleAddToCart = () => {
-    // If the user is not logged in, redirect to login page first
+    // If the user is not logged in, show auth modal instead of redirecting
     if (!user) {
-      // preserve current path so we can return after login
-      const next = pathname || window.location.pathname;
-      router.push(`/Auth/login?next=${encodeURIComponent(next)}`);
+      setShowAuthModal(true);
       return;
     }
 
@@ -97,6 +103,73 @@ const Details = ({ product }) => {
         >
           <IoCheckmarkCircle className="text-3xl" />
           <span className="font-semibold">Item added to cart!</span>
+        </div>
+      )}
+
+      {/* AUTH MODAL */}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"
+            >
+              ✕
+            </button>
+
+            {/* Tab Navigation */}
+            <div className="flex gap-4 mb-8 border-b border-gray-200">
+              <button
+                onClick={() => setAuthModalTab('login')}
+                className={`pb-4 px-2 font-semibold transition ${authModalTab === 'login'
+                  ? 'border-b-2 border-black text-black'
+                  : 'text-gray-500 hover:text-black'
+                  }`}
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setAuthModalTab('signup')}
+                className={`pb-4 px-2 font-semibold transition ${authModalTab === 'signup'
+                  ? 'border-b-2 border-black text-black'
+                  : 'text-gray-500 hover:text-black'
+                  }`}
+              >
+                Sign Up
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-3 text-black">
+                {authModalTab === 'login'
+                  ? 'Welcome Back!'
+                  : 'Create Account'}
+              </h2>
+              <p className="text-gray-600 mb-6">
+                {authModalTab === 'login'
+                  ? 'Sign in to continue with your purchase'
+                  : 'Sign up to unlock a personalized shopping experience'}
+              </p>
+
+              {/* Buttons */}
+              <div className="flex flex-col gap-3">
+                <Link
+                  href={authModalTab === 'login' ? '/Auth/login' : '/Auth/signup'}
+                  className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition text-center"
+                >
+                  {authModalTab === 'login' ? 'Go to Login' : 'Go to Sign Up'}
+                </Link>
+                <button
+                  onClick={() => setShowAuthModal(false)}
+                  className="w-full border border-gray-300 py-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition"
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

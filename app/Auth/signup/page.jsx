@@ -12,15 +12,23 @@ export default function SignupPage() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
     const router = useRouter();
     const { user, signup, logout } = useAuth();
 
-    // determine whether Firebase auth is initialized (client + env configured)
     const authAvailable = Boolean(getAuthInstance());
 
+    // Fade-in page animation
     useEffect(() => {
-        if (user) router.push('/');
-    }, [user, router]);
+        const t = setTimeout(() => setMounted(true), 100);
+        return () => clearTimeout(t);
+    }, []);
+
+    // Redirect if user already logged in
+    useEffect(() => {
+        if (user && !loading) router.push("/");
+    }, [user, loading, router]);
 
     const handleSignup = async (e) => {
         e.preventDefault();
@@ -34,24 +42,26 @@ export default function SignupPage() {
         }
 
         if (password.length < 6) {
-            setError("Password must be at least 6 characters");
+            setError("Password must be at least 6 characters long");
             setLoading(false);
             return;
         }
 
         try {
             await signup(email, password);
-            // Ensure the user is not automatically signed in after signup.
-            // Call logout to clear any session and redirect to the login page.
+
+            // Immediately logout so user must login manually
             try {
                 await logout();
-            } catch (e) {
-                // ignore logout errors
-            }
-            router.push('/Auth/login');
+            } catch {}
+
+            router.push("/Auth/login");
         } catch (err) {
-            const errorMessage = err && err.code ? getFirebaseErrorMessage(err.code) : err?.message || "An unexpected error occurred. Please try again.";
-            setError(errorMessage);
+            const msg = err?.code
+                ? getFirebaseErrorMessage(err.code)
+                : err?.message || "Something went wrong. Try again.";
+
+            setError(msg);
         } finally {
             setLoading(false);
         }
@@ -59,25 +69,46 @@ export default function SignupPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-black px-4">
-            <div className="w-full max-w-md bg-white text-black p-8 rounded-xl shadow-lg">
-                <h1 className="text-3xl font-bold text-center mb-6">Create Account</h1>
+
+            {/* GLASSMORPHIC SIGNUP CARD */}
+            <div
+                className={`
+                    w-full max-w-md 
+                    bg-white/15 backdrop-blur-xl 
+                    p-8 rounded-2xl shadow-2xl border border-white/20
+                    transform transition-all duration-700 ease-out
+                    text-white
+                    ${mounted ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"}
+                `}
+            >
+                <h1 className="text-3xl font-extrabold text-center mb-1">Create Account</h1>
+                <p className="text-center text-sm text-gray-200 mb-6">
+                    Join <span className="font-semibold text-white">Cyber</span> — personalized carts & wishlists await
+                </p>
 
                 {error && (
-                    <p className="bg-red-100 text-red-600 p-2 rounded mb-4 text-sm">{error}</p>
-                )}
-
-                {!authAvailable && (
-                    <p className="bg-yellow-100 text-yellow-800 p-2 rounded mb-4 text-sm">
-                        Firebase is not configured. Signup is disabled until you add Firebase config to `.env.local` and restart the dev server.
+                    <p className="bg-red-500/20 text-red-300 p-2 rounded mb-4 text-sm border border-red-400/40">
+                        {error}
                     </p>
                 )}
 
+                {!authAvailable && (
+                    <p className="bg-yellow-500/20 text-yellow-200 p-2 rounded mb-4 text-sm border border-yellow-300/40">
+                        Firebase is not configured. Add keys to <code>.env.local</code>.
+                    </p>
+                )}
+
+                {/* FORM */}
                 <form onSubmit={handleSignup} className="flex flex-col gap-4">
+
+                    {/* EMAIL */}
                     <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium">Email</label>
+                        <label className="text-sm font-medium text-gray-200">Email</label>
                         <input
                             type="email"
-                            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-black"
+                            className="border border-white/40 bg-white/10 rounded-lg px-3 py-2 text-white
+                                       focus:outline-none focus:ring-2 focus:ring-blue-400
+                                       placeholder-white/60 transition"
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -85,11 +116,14 @@ export default function SignupPage() {
                         />
                     </div>
 
+                    {/* PASSWORD */}
                     <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium">Password</label>
+                        <label className="text-sm font-medium text-gray-200">Password</label>
                         <input
                             type="password"
-                            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-black"
+                            className="border border-white/40 bg-white/10 rounded-lg px-3 py-2 text-white
+                                       focus:outline-none focus:ring-2 focus:ring-blue-400
+                                       placeholder-white/60 transition"
                             placeholder="Enter password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -97,11 +131,14 @@ export default function SignupPage() {
                         />
                     </div>
 
+                    {/* CONFIRM PASSWORD */}
                     <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium">Confirm Password</label>
+                        <label className="text-sm font-medium text-gray-200">Confirm Password</label>
                         <input
                             type="password"
-                            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-black"
+                            className="border border-white/40 bg-white/10 rounded-lg px-3 py-2 text-white
+                                       focus:outline-none focus:ring-2 focus:ring-blue-400
+                                       placeholder-white/60 transition"
                             placeholder="Confirm password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -109,13 +146,29 @@ export default function SignupPage() {
                         />
                     </div>
 
-                    <button type="submit" disabled={loading || !authAvailable} className="mt-2 bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition disabled:opacity-50">
+                    {/* BUTTON */}
+                    <button
+                        type="submit"
+                        disabled={loading || !authAvailable}
+                        className="mt-2 bg-blue-600/80 hover:bg-blue-700/90 text-white py-2 rounded-lg
+                                   transition transform hover:scale-[1.03] disabled:opacity-50"
+                    >
                         {loading ? "Creating Account..." : "Sign Up"}
                     </button>
                 </form>
 
-                <p className="text-center text-sm mt-4">Already have an account? <a href="/Auth/login" className="text-blue-600 underline hover:text-blue-800">Login</a></p>
-                <p className="text-center text-sm mt-2"><a href="/" className="text-gray-600 hover:text-gray-800">← Back to Home</a></p>
+                <p className="text-center text-sm mt-4 text-gray-200">
+                    Already have an account?{" "}
+                    <a href="/Auth/login" className="text-blue-300 hover:underline">
+                        Login
+                    </a>
+                </p>
+
+                <p className="text-center text-sm mt-2">
+                    <a href="/" className="text-gray-400 hover:text-white">
+                        ← Back to Home
+                    </a>
+                </p>
             </div>
         </div>
     );

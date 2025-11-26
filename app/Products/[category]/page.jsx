@@ -71,8 +71,16 @@ export default function CategoryPage() {
       setSortBy("Newest");
 
       try {
-        const res = await fetch("https://dummyjson.com/products?limit=200&skip=0");
+        const res = await fetch("/api/products?limit=200&skip=0");
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
         const data = await res.json();
+
+        if (!data.products || !Array.isArray(data.products)) {
+          console.warn("No products in API response");
+          setProducts([]);
+          setAvailableBrands([]);
+          return;
+        }
 
         const categoryMap = {
           phones: "smartphones",
@@ -81,9 +89,9 @@ export default function CategoryPage() {
           cameras: "fragrances",
           headphones: "mobile-accessories",
           gaming: "sports-accessories",
-          Furniture:"furniture",
-          
-  
+          Furniture: "furniture",
+
+
         };
 
         const apiCategory = categoryMap[category?.toLowerCase()] || category?.toLowerCase();

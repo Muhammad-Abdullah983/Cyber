@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
         const auth = getAuthInstance();
         if (!auth) throw new Error("Auth not initialized");
         const result = await createUserWithEmailAndPassword(auth, email, password);
-        setUser(result.user);
         return result;
     };
 
@@ -49,7 +48,6 @@ export const AuthProvider = ({ children }) => {
         const auth = getAuthInstance();
         if (!auth) throw new Error("Auth not initialized");
         const result = await signInWithEmailAndPassword(auth, email, password);
-        setUser(result.user);
         return result;
     };
 
@@ -58,7 +56,6 @@ export const AuthProvider = ({ children }) => {
         const provider = getGoogleProvider();
         if (!auth || !provider) throw new Error("Auth or Google provider not initialized");
         const result = await signInWithPopup(auth, provider);
-        setUser(result.user);
         return result;
     };
 

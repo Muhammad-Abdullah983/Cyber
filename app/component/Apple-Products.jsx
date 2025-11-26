@@ -68,7 +68,8 @@ export default function ProductsSection() {
                         alt="Macbook Air"
                         width={330}
                         height={200}
-                        className="object-contain w-[330px] h-[200px] mb-3"
+                        className="object-contain w-full max-w-[330px] h-auto mb-3"
+                        priority
                     />
                     <h2 className="text-[34px] font-semibold text-black mb-2">
                         Macbook <span className="font-thin">Air</span>
