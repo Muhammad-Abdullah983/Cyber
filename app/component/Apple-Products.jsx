@@ -64,7 +64,7 @@ export default function ProductsSection() {
                 {/* Macbook Air */}
                 <div className="bg-[#F5F5F7] flex flex-col items-center text-center p-6">
                     <Image
-                        src="/images/mobile/Macbook-14.svg"
+                        src="/images/mobile/MacBook-14.svg"
                         alt="Macbook Air"
                         width={330}
                         height={200}

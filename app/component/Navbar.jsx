@@ -93,7 +93,6 @@ export default function Navbar() {
                   title={user.email}
                 >
                   <FiUser />
-                  {user.displayName && <span className="text-sm hidden lg:block">{user.displayName}</span>}
                 </button>
 
                 {userMenuOpen && (

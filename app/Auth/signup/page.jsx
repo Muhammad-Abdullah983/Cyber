@@ -13,7 +13,7 @@ export default function SignupPage() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const { user, signup } = useAuth();
+    const { user, signup, logout } = useAuth();
 
     // determine whether Firebase auth is initialized (client + env configured)
     const authAvailable = Boolean(getAuthInstance());
@@ -41,7 +41,14 @@ export default function SignupPage() {
 
         try {
             await signup(email, password);
-            router.push('/');
+            // Ensure the user is not automatically signed in after signup.
+            // Call logout to clear any session and redirect to the login page.
+            try {
+                await logout();
+            } catch (e) {
+                // ignore logout errors
+            }
+            router.push('/Auth/login');
         } catch (err) {
             const errorMessage = err && err.code ? getFirebaseErrorMessage(err.code) : err?.message || "An unexpected error occurred. Please try again.";
             setError(errorMessage);
